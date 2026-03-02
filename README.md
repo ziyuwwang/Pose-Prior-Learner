@@ -20,7 +20,7 @@ The [Taichi](https://github.com/AliaksandrSiarohin/motion-cosegmentation), [Huma
 We provide the Youtube Dog Video dataset [here](https://drive.google.com/drive/folders/1J3NWlrrVtgHMgHfFBMhEniqHnyHbl2Zo?usp=drive_link).
 
 ## Pre-trained Models
-he pre-trained models can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1nh9HSDwN3BZP3XDQDiXXHy7X14DsqPuA?usp=drive_link).
+The pre-trained models can be downloaded from [Google Drive](https://drive.google.com/drive/folders/1nh9HSDwN3BZP3XDQDiXXHy7X14DsqPuA?usp=drive_link).
 
 ## Training & Testing
 To train the model from scratch, please follow the steps below:
