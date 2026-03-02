@@ -9,7 +9,7 @@ from dataset.cub_three import TrainSet as cub_three
 from dataset.flowers import TrainSet as flowers
 from dataset.h36m import TrainSet as h36m
 from dataset.h36m_wobg import TrainSet as h36m_wobg
-from dataset.hand import TrainSet as hand
+from dataset.hands import TrainSet as hands
 from dataset.horse import TrainSet as horse
 from dataset.taichi import TrainSet as taichi
 from torch.utils.tensorboard import SummaryWriter
@@ -75,7 +75,7 @@ def run(args):
         dataset = flowers(transform=transform)
     elif args.dataset == 'hands':
         transform = transforms.Compose([resize, to_tensor, flip, normalize])
-        dataset = hand(transform=transform)
+        dataset = hands(transform=transform)
     elif args.dataset == 'cub':
         transform = transforms.Compose([resize, to_tensor, normalize])
         dataset = cub(transform=transform)

@@ -25,16 +25,16 @@ he pre-trained models can be downloaded from [Google Drive](https://drive.google
 ## Training & Testing
 To train the model from scratch, please follow the steps below:
 - Modify the ``DATA_DIR`` in ``dataset/xxx.py`` to your own.
-- Run the command as shown in the following example. The input parameter is the ID of your GPUs.
+- Run the command as shown in the following example.
 ```
-sh script/train_hands.py
+sh script/train_h36m.py
 ```
 
 To test the model:
 - Modify the ``DATA_DIR`` in ``dataset/xxx.py`` to your own.
-- Run the command as shown in the following example. The input parameter is the ID of your GPUs.
+- Run the command as shown in the following example.
 ```
-sh script/test_hands.py
+sh script/test_h36m.py
 ```
 ## Citation
 If you find our paper and/or code helpful, please cite:

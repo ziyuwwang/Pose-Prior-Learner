@@ -4,7 +4,10 @@ import torch.nn.functional as F
 from argparse import ArgumentParser
 from torchvision.io import read_image
 import torchvision.transforms as transforms
-from dataset.hand import TestSet
+from dataset.h36m import TestSet as h36m
+from dataset.taichi import TestSet as taichi
+from dataset.cub import TestSet as cub
+from dataset.cub_three import TestSet as cub_three
 from torch.utils.data import DataLoader
 import torch.multiprocessing
 torch.multiprocessing.set_sharing_strategy('file_system')
@@ -13,14 +16,9 @@ import time
 
 def parse_args():
     parser = ArgumentParser()
-    parser.add_argument('--num_parts', type=int, default=16)
-    parser.add_argument('--thick', type=float, default=1e-3)
-    parser.add_argument('--sklr', type=float, default=512)
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--num_epochs', type=int, default=50)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--checkpoint_path', default="./checkpoint_latest.pth")
-    parser.add_argument('--missing', type=float, default=0.8)
     args = parser.parse_args()
     return args
 
@@ -69,7 +67,17 @@ def run(args):
     transform = transforms.Compose([transforms.Resize((args.img_size, args.img_size)),
                                     transforms.ToTensor(),
                                     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])])
-    test_dataloader = DataLoader(dataset=TestSet(transform=transform),
+    if args.dataset == 'h36m':
+        dataset = h36m(transform=transform)
+    elif args.dataset == 'taichi':
+        dataset = taichi(transform=transform)
+    elif args.dataset == 'cub':
+        dataset = cub(transform=transform)
+    elif args.dataset == 'cub_three':
+        dataset = cub_three(transform=transform)
+    else:
+        raise NotImplementedError
+    test_dataloader = DataLoader(dataset=dataset,
                                  batch_size=args.batch_size,
                                  shuffle=False,
                                  num_workers=args.num_workers)
