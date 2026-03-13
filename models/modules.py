@@ -72,23 +72,22 @@ class ResNetConditionalParameterRegressor(nn.Module):
             TransposedBlock(256, 128),  # 32
         )
         self.pred_prob = nn.Conv2d(128, self.num_parts, kernel_size=3, padding=1)
-        self.emb = nn.Linear(4, 256)
         grid = gen_grid2d(self.output_size).reshape(1, self.output_size ** 2, 2)
         self.coord = nn.Parameter(grid, requires_grad=False)
+        self.emb = nn.Linear(2, 128)
         self.predict = nn.Sequential(
-            nn.LayerNorm(256),
-            nn.Linear(256, 64),
-            nn.ReLU(),
-            nn.Linear(64, 6)
+            nn.Linear(128 * 3, 128),
+            nn.LeakyReLU(inplace=True),
+            nn.Linear(128, 6)
         )
 
     def forward(self, input, template_points):
-        prob_feat = self.conv(input) #(B, 128, h, w)
-        prob_map = self.pred_prob(prob_feat) #(B, n, h, w)
+        B = input.shape[0]
+        prob_feat = self.conv(input)  # (B, 128, h, w)
+        prob_map = self.pred_prob(prob_feat)  # (B, n, h, w)
         prob_map = F.softmax(prob_map.flatten(2, 3), dim=2)
-        keypoints = self.coord * prob_map
-        keypoints = keypoints.sum(dim=2)
-        return self.predict(self.emb(torch.cat([keypoints, template_points], dim=-1))).view(-1, self.num_parts, 2, 3), keypoints
+        key_feat = torch.matmul(prob_map, torch.cat([prob_feat.flatten(2, 3).transpose(1, 2), self.emb(self.coord.repeat(B, 1, 1))], dim=-1))
+        return self.predict(torch.cat([key_feat, self.emb(template_points)], dim=-1).flatten(0, 1)).view(B, self.num_parts, 2, 3)
 
 class DownBlock(nn.Module):
     def __init__(self, in_channels: int, out_channels: int) -> None:

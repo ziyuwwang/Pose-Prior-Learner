@@ -89,9 +89,9 @@ def run(args):
         keypoints = batch['keypoints'].to(device)
         template_points = template_points_.repeat(frame.size(0), 1, 1)
         with torch.no_grad():
-            estimated_params, init_keypoints = model.regressor(frame, template_points)
+            estimated_params = model.regressor(frame, template_points)
             aug = model.aug.unsqueeze(0).repeat(frame.size(0), 1, 1)
-            transformed_template_points = torch.matmul(estimated_params,torch.cat([template_points, aug], dim=-1).unsqueeze(-1)).squeeze(-1) + init_keypoints
+            transformed_template_points = torch.matmul(estimated_params,torch.cat([template_points, aug], dim=-1).unsqueeze(-1)).squeeze(-1)
             test_output_list.append({'keypoints': keypoints.cpu(), 'det_keypoints': transformed_template_points.cpu()})
     print(test_epoch_end(test_output_list)['val_loss'])
 

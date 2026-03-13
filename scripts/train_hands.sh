@@ -5,4 +5,5 @@ python train.py \
 --num_parts 16 \
 --block 8 \
 --missing 0.9 \
---use_alpha True
+--use_alpha True \
+--max_steps 5000

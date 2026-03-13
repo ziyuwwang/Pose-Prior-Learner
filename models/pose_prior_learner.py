@@ -159,7 +159,7 @@ class PosePriorLearner(nn.Module):
         self.sklr = args.sklr
         self.skeleton_idx = torch.triu_indices(self.num_parts, self.num_parts, offset=1)
         self.n_skeleton = len(self.skeleton_idx[0])
-        skeleton_scalar = (torch.randn(self.num_parts, self.num_parts) / 10 - 4) / self.sklr
+        skeleton_scalar = (torch.randn(self.num_parts, self.num_parts) - 4) / self.sklr
         self.skeleton_scalar = nn.Parameter(skeleton_scalar)
 
         self.memory = Memory(num_parts=self.num_parts)
@@ -167,6 +167,7 @@ class PosePriorLearner(nn.Module):
         self.regressor = ResNetConditionalParameterRegressor(num_parts=args.num_parts)
         self.translator = ResNetReconstructor()
         self.vgg_loss = VGGPerceptualLoss()
+        #self.I = torch.eye(3)[0:2].view(1, 1, 2, 3).repeat(args.batch_size, args.num_parts, 1, 1).cuda()
 
         self.block = args.block
         self.missing = args.missing
@@ -234,12 +235,13 @@ class PosePriorLearner(nn.Module):
         img_size = frame.shape[2]
 
         # Estimate the regressor parameters
-        template_points = self.memory.get_template().unsqueeze(0).repeat(batch_size, 1, 1)
-        estimated_params, init_keypoints = self.regressor(frame, template_points)
+        template_points = self.memory.get_template().unsqueeze(0)
+        estimated_params = self.regressor(frame, template_points.repeat(batch_size, 1, 1))
+        #estimated_params = self.I + estimated_params
 
         aug = self.aug.unsqueeze(0).repeat(batch_size, 1, 1)
         transformed_template_points = torch.matmul(estimated_params,
-                                                   torch.cat([template_points, aug], dim=-1).unsqueeze(-1)).squeeze(-1) + init_keypoints
+                                                   torch.cat([template_points.repeat(batch_size, 1, 1), aug], dim=-1).unsqueeze(-1)).squeeze(-1)
         boundary_loss = compute_template_boundary_loss(transformed_template_points)
         #edge_reg_loss = self.compute_edge_reg_loss(template_points.detach(), transformed_template_points.detach())
         transformed_template = self.rasterize(transformed_template_points, output_size=img_size)
@@ -256,7 +258,7 @@ class PosePriorLearner(nn.Module):
         consistency =  100 * F.mse_loss(vq_transformed_template_points, transformed_template_points.detach())
 
         transformed_template = transformed_template.repeat(1, 3, 1, 1)
-        template = self.rasterize(self.memory.get_template().unsqueeze(0), output_size=img_size).repeat(1, 3, 1, 1)
+        template = self.rasterize(template_points, output_size=img_size).repeat(1, 3, 1, 1)
         vq_transformed_template = self.rasterize(vq_transformed_template_points, output_size=img_size)
         vq_transformed_template = vq_transformed_template.repeat(1, 3, 1, 1)
 

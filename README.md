@@ -6,6 +6,14 @@ This repository contains the official implementation of the ICLR 2026 paper:
 
 Ziyu Wang, Shuangpeng Han, Mengmi Zhang
 
+Access to our poster [HERE](https://docs.google.com/presentation/d/1l98a7232TkAwq5p9fbEW-Bu5LkrpBSBR/edit?usp=sharing&ouid=105149501031691727088&rtpof=true&sd=true) and presentation video [HERE](https://youtu.be/a9gl9S3gPgE).
+## Abstract
+A prior represents a set of beliefs or assumptions about a system, aiding inference and decision-making. In this paper, we introduce the challenge of unsupervised categorical prior learning in pose estimation, where AI models learn a general pose prior for an object category from images in a self-supervised manner. Although priors are effective in estimating pose, acquiring them can be difficult. We propose a novel method, named Pose Prior Learner (PPL), to learn a general pose prior for any object category. PPL uses a hierarchical memory to store compositional parts of prototypical poses, from which we distill a general pose prior. This prior improves pose estimation accuracy through template transformation and image reconstruction. PPL learns meaningful pose priors without any additional human annotations or interventions, outperforming competitive baselines on both human and animal pose estimation datasets. Notably, our experimental results reveal the effectiveness of PPL using learned prototypical poses for pose estimation on occluded images. Through iterative inference, PPL leverages the pose prior to refine estimated poses, regressing them to any prototypical poses stored in memory.
+<div align=left><img src="./figures/Challenge.png" width="99%" height="99%" ></div>
+
+## Pose Prior Learner Model
+<div align=left><img src="./figures/structure.png" width="99%" height="99%" ></div>
+
 ## Environment Setup
 The basic environment contains these packages:
 - Python 3.12.9
@@ -36,6 +44,24 @@ To test the model:
 ```
 sh script/test_h36m.py
 ```
+
+## Visualization under Occlusion with Iterative Refining
+<table>
+<tr>
+<td align="center"><img src="./figures/human_occ.png" width="200" height="200"></td>
+<td align="center"><img src="./figures/human.gif" width="200" height="200"></td>
+<td align="center"><img src="./figures/horse_occ.png" width="200" height="200"></td>
+<td align="center"><img src="./figures/horse.gif" width="200" height="200"></td>
+</tr>
+
+<tr>
+<td align="center"><img src="./figures/hand_occ.png" width="200" height="200"></td>
+<td align="center"><img src="./figures/hand.gif" width="200" height="200"></td>
+<td align="center"><img src="./figures/flower_occ.png" width="200" height="200"></td>
+<td align="center"><img src="./figures/flower.gif" width="200" height="200"></td>
+</tr>
+</table>
+
 ## Citation
 If you find our paper and/or code helpful, please cite:
 ```

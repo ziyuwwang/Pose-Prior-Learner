@@ -26,8 +26,8 @@ def parse_args():
     parser.add_argument('--subject', default=None)
     parser.add_argument('--img_size', type=int, default=128)
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--learning_rate', type=float, default=0.001)
-    parser.add_argument('--num_epochs', type=int, default=1000)
+    parser.add_argument('--learning_rate', type=float, default=0.0001)
+    parser.add_argument('--num_epochs', type=int, default=10000)
     parser.add_argument('--max_steps', type=int, default=20000)
     parser.add_argument('--num_workers', type=int, default=8)
     parser.add_argument('--boundary_loss_weight', type=float, default=1)
@@ -127,9 +127,9 @@ def run(args):
                         else:
                             grid = show_images(v, renorm=inverse)
                         writer.add_image(k, grid, global_step=i)
-            if i >= args.max_steps:
-                break
             return_imgs = False
+        if i >= args.max_steps:
+            break
         # save checkpoint
         torch.save(model, os.path.join(log_dir, 'checkpoint_latest.pth'))
 

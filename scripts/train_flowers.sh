@@ -3,6 +3,6 @@ python train.py \
 --log_dir "./logs/flowers" \
 --thick 1e-4 \
 --num_parts 16 \
---block 8 \
+--block 16 \
 --missing 0.9 \
 --use_alpha True
