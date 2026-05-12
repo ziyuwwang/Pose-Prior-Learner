@@ -68,7 +68,7 @@ def run(args):
         transform = transforms.Compose([resize, to_tensor, flip, normalize])
         dataset = taichi(transform=transform)
     elif args.dataset == 'horse':
-        transform = transforms.Compose([resize, to_tensor, flip, normalize])
+        transform = transforms.Compose([resize, to_tensor, normalize])
         dataset = horse(transform=transform)
     elif args.dataset == 'flowers':
         transform = transforms.Compose([resize, to_tensor, flip, normalize])
